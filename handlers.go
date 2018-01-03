@@ -107,6 +107,7 @@ func VerifyStep1(w http.ResponseWriter, r *http.Request) {
 
     if verified {
         fmt.Fprint(w, "Verified!")
+        SendVerificationEmail(result.Email, result.EmailToken)
     } else {
         fmt.Fprint(w, "Not verified! Better go into your ERP once again and check again!")
     }

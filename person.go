@@ -6,6 +6,10 @@ import (
     "math/rand"
     "crypto/sha256"
     "fmt"
+    sg "github.com/sendgrid/sendgrid-go"
+    "github.com/sendgrid/sendgrid-go/helpers/mail"
+    "log"
+    "os"
 )
 
 type Person struct {
@@ -43,4 +47,25 @@ func GetPerson(roll string, email string) Person {
         email_tok[:15],
         link_suffix[:15],
     }
+}
+
+func SendVerificationEmail(email string, token string) {
+	from := mail.NewEmail(os.Getenv("FROM_NAME"), os.Getenv("FROM_EMAIL"))
+
+	subject := "Leprechaun Authentication: Step 2, Email Verification"
+
+	to := mail.NewEmail("", email)
+
+	plainTextContent := fmt.Sprintf("Please visit this URL in a web browser: %s/verify2/%s", os.Getenv("BASE_LINK"), token)
+
+	message := mail.NewSingleEmail(from, subject, to, plainTextContent, plainTextContent)
+
+	client := sg.NewSendClient(os.Getenv("SENDGRID_API_KEY"))
+	response, err := client.Send(message)
+	if err != nil {
+		log.Println(err)
+	} else {
+		log.Println(response.StatusCode)
+        log.Printf("Email sent to %s successfully!", email)
+	}
 }
