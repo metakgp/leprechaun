@@ -10,11 +10,11 @@ import (
 
 type Person struct {
     // ID bson.ObjectID `bson:"_id,omitempty"`
-    roll string
-    email string
-    verifier string
-    email_tok string
-    link_suffix string
+    Roll string
+    Email string
+    Verifier string
+    EmailToken string
+    LinkSuffix string
 }
 
 // ENHANCE: Improve the generation of the random seeds

@@ -7,6 +7,8 @@ import (
     "os"
 )
 
+var GlobalDBSession = DialDB()
+
 func main() {
 
     err := godotenv.Load()
@@ -20,4 +22,6 @@ func main() {
 
     log.Printf("Server started on %s", os.Getenv("PORT"))
 	log.Fatal(http.ListenAndServe(":" + os.Getenv("PORT"), router))
+
+    defer GlobalDBSession.Close()
 }

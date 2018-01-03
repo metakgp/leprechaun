@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+    "os"
+    "log"
     // "strconv"
 	// "github.com/gorilla/mux"
 	// "encoding/json"
@@ -34,8 +36,14 @@ func BeginAuth(w http.ResponseWriter, r *http.Request) {
     roll := r.PostForm.Get("roll")
     email := r.PostForm.Get("email")
 
-    t := GetPerson(roll, email)
+    p := GetPerson(roll, email)
+
+    c := GlobalDBSession.DB(os.Getenv("DB_NAME")).C("people")
+    err := c.Insert(&p)
+    if err != nil {
+        log.Fatal(err)
+    }
 
     w.Header().Set("Content-Type", "text/html; charset=utf-8")
-    fmt.Fprintf(w, "%s", buildAuthPage(t.verifier, t.link_suffix))
+    fmt.Fprintf(w, "%s", buildAuthPage(p.Verifier, p.LinkSuffix))
 }
