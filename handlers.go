@@ -9,6 +9,7 @@ import (
     "net/url"
     "github.com/gorilla/mux"
     "gopkg.in/mgo.v2/bson"
+    "strings"
 )
 
 func Index(w http.ResponseWriter, r *http.Request) {
@@ -82,12 +83,12 @@ func getSecurityQuestions(roll string) []string {
 
 func VerifyStep1(w http.ResponseWriter, r *http.Request) {
     vars := mux.Vars(r)
-    verifier := vars["token"]
+    linkSuf := vars["token"]
 
     c := GlobalDBSession.DB(os.Getenv("DB_NAME")).C("people")
 
     var result Person
-    err := c.Find(bson.M{"linksuffix": verifier}).One(&result)
+    err := c.Find(bson.M{"linksuffix": linkSuf}).One(&result)
 
     if err != nil {
         fmt.Fprint(w, "That verifier token isn't there in our DB!")
@@ -95,5 +96,18 @@ func VerifyStep1(w http.ResponseWriter, r *http.Request) {
     }
 
     secQues := getSecurityQuestions(result.Roll)
-    fmt.Fprintf(w, "%v %s", result, secQues)
+
+    verified := false
+    for _, ques := range secQues {
+        if strings.Contains(ques, result.Verifier) {
+            verified = true
+            break
+        }
+    }
+
+    if verified {
+        fmt.Fprint(w, "Verified!")
+    } else {
+        fmt.Fprint(w, "Not verified! Better go into your ERP once again and check again!")
+    }
 }
