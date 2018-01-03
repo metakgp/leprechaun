@@ -24,4 +24,10 @@ var routes = Routes{
         "/auth",
         BeginAuth,
     },
+    Route{
+        "VerifyStep1",
+        "GET",
+        "/verify1/{token}",
+        VerifyStep1,
+    },
 }

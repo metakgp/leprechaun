@@ -6,11 +6,9 @@ import (
 	"net/http"
     "os"
     "log"
-    // "strconv"
-	// "github.com/gorilla/mux"
-	// "encoding/json"
-    // "gopkg.in/mgo.v2
-    // "gopkg.in/mgo.v2/bson"
+    "net/url"
+    "github.com/gorilla/mux"
+    "gopkg.in/mgo.v2/bson"
 )
 
 func Index(w http.ResponseWriter, r *http.Request) {
@@ -46,4 +44,56 @@ func BeginAuth(w http.ResponseWriter, r *http.Request) {
 
     w.Header().Set("Content-Type", "text/html; charset=utf-8")
     fmt.Fprintf(w, "%s", buildAuthPage(p.Verifier, p.LinkSuffix))
+}
+
+func getSingleSecQues(roll string) string {
+    v := url.Values{}
+    v.Set("user_id", roll)
+    resp, _ := http.PostForm(ERP_SECRET_QUES_URL, v)
+    body, _ := ioutil.ReadAll(resp.Body)
+    return string(body)
+}
+
+func getSecurityQuestions(roll string) []string {
+    allSecQues := []string{}
+
+    // Perform upto 30 tries to get the 3 unique secret questions from ERP
+    for i := 1; i < 30; i++ {
+        secQues := getSingleSecQues(roll)
+        log.Printf("Run %d, Got %s", i, secQues)
+        alreadyFound := false
+        for _, q := range allSecQues {
+            if q == secQues {
+                alreadyFound = true
+                break;
+            }
+        }
+
+        if !alreadyFound {
+            allSecQues = append(allSecQues[:], secQues)
+        }
+
+        if len(allSecQues) >= 3 {
+            break;
+        }
+    }
+    return allSecQues;
+}
+
+func VerifyStep1(w http.ResponseWriter, r *http.Request) {
+    vars := mux.Vars(r)
+    verifier := vars["token"]
+
+    c := GlobalDBSession.DB(os.Getenv("DB_NAME")).C("people")
+
+    var result Person
+    err := c.Find(bson.M{"linksuffix": verifier}).One(&result)
+
+    if err != nil {
+        fmt.Fprint(w, "That verifier token isn't there in our DB!")
+        return
+    }
+
+    secQues := getSecurityQuestions(result.Roll)
+    fmt.Fprintf(w, "%v %s", result, secQues)
 }
