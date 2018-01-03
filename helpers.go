@@ -4,6 +4,7 @@ import (
     "os"
     "html/template"
     "bytes"
+    "time"
 )
 
 // TODO
@@ -36,11 +37,15 @@ func buildAuthPage(verifier string, link_suffix string) string {
 
 type Step1Complete struct {
     Email string
+    CompletedTime string
+    Completed bool
 }
 
-func buildStep1CompletePage(email string) string {
+func buildStep1CompletePage(email string, completedTime time.Time, completed bool) string {
     res := Step1Complete{
                     email,
+                    completedTime.Format(time.RFC822),
+                    completed,
                 }
     new_temp, _ := template.ParseFiles("step1_complete.tmpl.html")
     var templated_res bytes.Buffer

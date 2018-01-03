@@ -10,6 +10,7 @@ import (
     "github.com/gorilla/mux"
     "gopkg.in/mgo.v2/bson"
     "strings"
+    "time"
 )
 
 func Index(w http.ResponseWriter, r *http.Request) {
@@ -95,19 +96,26 @@ func VerifyStep1(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    secQues := getSecurityQuestions(result.Roll)
-
     verified := false
-    for _, ques := range secQues {
-        if strings.Contains(ques, result.Verifier) {
-            verified = true
-            break
+
+    if !result.Step1Complete {
+
+        secQues := getSecurityQuestions(result.Roll)
+
+        for _, ques := range secQues {
+            if strings.Contains(ques, result.Verifier) {
+                verified = true
+                break
+            }
         }
     }
 
-    if verified {
-        fmt.Fprint(w, buildStep1CompletePage(result.Email))
+    if verified || result.Step1Complete {
+        fmt.Fprint(w, buildStep1CompletePage(result.Email, result.Step1CompletedAt, result.Step1Complete))
         SendVerificationEmail(result.Email, result.EmailToken)
+        if !result.Step1Complete {
+            c.Update(bson.M{"linksuffix": linkSuf}, bson.M{ "$set": bson.M{"step1complete": true, "step1completedat": time.Now()} })
+        }
     } else {
         fmt.Fprint(w, "Not verified! Go into your ERP and ensure that you have put your verifier token in one of the secret questions!")
     }
@@ -127,4 +135,5 @@ func VerifyStep2(w http.ResponseWriter, r *http.Request) {
     }
 
     fmt.Fprint(w, buildStep2CompletePage(result.Roll, result.Email))
+    c.Update(bson.M{"emailtoken": emailTok}, bson.M{ "$set": bson.M{"step2complete": true} })
 }

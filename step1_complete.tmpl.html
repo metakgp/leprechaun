@@ -41,9 +41,14 @@
                     A verification email has been sent to {{.Email}}!
                 </h3>
                 <h3>
-                    Visit the link inside this email to complete your
+                    Visit the link inside that email to complete your
                     authentication!
                 </h3>
+                {{if .Completed}}
+                    <i>
+                        This step was completed at {{.CompletedTime}}
+                    </i>
+                {{end}}
             </div>
 
             </main>

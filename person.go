@@ -19,6 +19,10 @@ type Person struct {
     Verifier string
     EmailToken string
     LinkSuffix string
+    Step1Complete bool
+    Step1CompletedAt time.Time
+    Step2Complete bool
+    Step2CompletedAt time.Time
 }
 
 // ENHANCE: Improve the generation of the random seeds
@@ -46,6 +50,10 @@ func GetPerson(roll string, email string) Person {
         verifier[:15],
         email_tok[:15],
         link_suffix[:15],
+        false,
+        time.Now(),
+        false,
+        time.Now(),
     }
 }
 
