@@ -12,9 +12,9 @@ type Person struct {
     // ID bson.ObjectID `bson:"_id,omitempty"`
     roll string
     email string
-    verifier string `json:",omitempty"`
-    email_tok string `json:",omitempty"`
-    link_suffix string `json:",omitempty"`
+    verifier string
+    email_tok string
+    link_suffix string
 }
 
 // ENHANCE: Improve the generation of the random seeds

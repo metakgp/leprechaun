@@ -34,17 +34,8 @@ func BeginAuth(w http.ResponseWriter, r *http.Request) {
     roll := r.PostForm.Get("roll")
     email := r.PostForm.Get("email")
 
-    if !validRoll(roll) {
-        fmt.Fprintf(w, "Roll number not valid. Please try again")
-        return
-    }
-
-    if !validEmail(email) {
-        fmt.Fprintf(w, "Email not valid. Please try again")
-        return
-    }
-
     t := GetPerson(roll, email)
 
-    fmt.Fprintf(w, "You have submitted valid roll and email. The record is calculated to be: %v", t)
+    w.Header().Set("Content-Type", "text/html; charset=utf-8")
+    fmt.Fprintf(w, "%s", buildAuthPage(t.verifier, t.link_suffix))
 }

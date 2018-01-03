@@ -18,5 +18,6 @@ func main() {
 
     http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./public"))))
 
+    log.Printf("Server started on %s", os.Getenv("PORT"))
 	log.Fatal(http.ListenAndServe(":" + os.Getenv("PORT"), router))
 }
