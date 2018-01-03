@@ -7,6 +7,8 @@ import (
     // "strconv"
 	// "github.com/gorilla/mux"
 	// "encoding/json"
+    // "gopkg.in/mgo.v2
+    // "gopkg.in/mgo.v2/bson"
 )
 
 func Index(w http.ResponseWriter, r *http.Request) {
@@ -21,6 +23,14 @@ func Index(w http.ResponseWriter, r *http.Request) {
 
 func BeginAuth(w http.ResponseWriter, r *http.Request) {
     r.ParseForm()
+
+    for _, f := range fields {
+        if !f.validator(r.PostForm.Get(f.key)) {
+            fmt.Fprintf(w, "%s field isn't valid!", f.key)
+            return
+        }
+    }
+
     roll := r.PostForm.Get("roll")
     email := r.PostForm.Get("email")
 
@@ -34,5 +44,7 @@ func BeginAuth(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    fmt.Fprint(w, "You have submitted valid roll and email")
+    t := GetPerson(roll, email)
+
+    fmt.Fprintf(w, "You have submitted valid roll and email. The record is calculated to be: %v", t)
 }
