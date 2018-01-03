@@ -33,3 +33,33 @@ func buildAuthPage(verifier string, link_suffix string) string {
     new_temp.Execute(&templated_res, res)
     return templated_res.String()
 }
+
+type Step1Complete struct {
+    Email string
+}
+
+func buildStep1CompletePage(email string) string {
+    res := Step1Complete{
+                    email,
+                }
+    new_temp, _ := template.ParseFiles("step1_complete.tmpl.html")
+    var templated_res bytes.Buffer
+    new_temp.Execute(&templated_res, res)
+    return templated_res.String()
+}
+
+type Step2Complete struct {
+    Roll string
+    Email string
+}
+
+func buildStep2CompletePage(roll string, email string) string {
+    res := Step2Complete{
+                    roll,
+                    email,
+                }
+    new_temp, _ := template.ParseFiles("step2_complete.tmpl.html")
+    var templated_res bytes.Buffer
+    new_temp.Execute(&templated_res, res)
+    return templated_res.String()
+}

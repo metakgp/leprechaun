@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <title>Leprechaun - KGP ERP Authentication Service</title>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    </head>
+    <body style="margin:40px;">
+
+        <div class="container">
+            <header class="header clearfix">
+                <nav>
+                    <ul class="nav nav-pills float-right">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link"
+                                href="https://github.com/metakgp"
+                                target="_blank">Github</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="https://metakgp.github.io" target="_blank">About</a>
+                        </li>
+                    </ul>
+                </nav>
+                <h3>Leprechaun</h3>
+            </header>
+
+            <main role="main">
+
+            <div class="jumbotron">
+                <h1 class="display-3">
+                    Verification completed!
+                </h1>
+                <h3>
+                    You have successfully completed both steps of the Leprechaun
+                    authentication service!
+                </h3>
+                <h3>
+                    {{.Roll}}&nbsp;&lt;=&gt;&nbsp;{{.Email}}
+                </h3>
+            </div>
+
+            <p>
+            You can now remove the verification token from your secret
+            question in your ERP account!
+            </p>
+
+            </main>
+
+            <footer class="footer">
+                <hr>
+                <p>Leprechaun - Metakgp 2017</p>
+            </footer>
+
+    </body>
+</html>

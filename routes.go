@@ -30,4 +30,10 @@ var routes = Routes{
         "/verify1/{token}",
         VerifyStep1,
     },
+    Route{
+        "VerifyStep2",
+        "GET",
+        "/verify2/{token}",
+        VerifyStep2,
+    },
 }

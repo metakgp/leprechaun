@@ -106,9 +106,25 @@ func VerifyStep1(w http.ResponseWriter, r *http.Request) {
     }
 
     if verified {
-        fmt.Fprint(w, "Verified!")
+        fmt.Fprint(w, buildStep1CompletePage(result.Email))
         SendVerificationEmail(result.Email, result.EmailToken)
     } else {
-        fmt.Fprint(w, "Not verified! Better go into your ERP once again and check again!")
+        fmt.Fprint(w, "Not verified! Go into your ERP and ensure that you have put your verifier token in one of the secret questions!")
     }
+}
+
+func VerifyStep2(w http.ResponseWriter, r *http.Request) {
+    vars := mux.Vars(r)
+    emailTok := vars["token"]
+    c := GlobalDBSession.DB(os.Getenv("DB_NAME")).C("people")
+
+    var result Person
+    err := c.Find(bson.M{"emailtoken": emailTok}).One(&result)
+
+    if err != nil {
+        fmt.Fprint(w, "That email token isn't there in the DB!")
+        return
+    }
+
+    fmt.Fprint(w, buildStep2CompletePage(result.Roll, result.Email))
 }
