@@ -5,6 +5,8 @@ import (
     "os"
 )
 
+// DialDB() returns a mgo Session connected to the Database pointed to by the
+// DB_URL environment variable
 func DialDB() *mgo.Session {
     session, err := mgo.Dial(os.Getenv("DB_URL"))
     if err != nil {
