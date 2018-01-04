@@ -122,7 +122,9 @@ func VerifyStep1(w http.ResponseWriter, r *http.Request) {
 
     if verified || result.Step1Complete {
         fmt.Fprint(w, buildStep1CompletePage(result.Email, result.Step1CompletedAt, result.Step1Complete))
-        SendVerificationEmail(result.Email, result.EmailToken)
+        SendVerificationEmail(result.Email,
+                                EMAIL_SUBJECT_STEP2,
+                                "verify2/" + result.EmailToken)
         if !result.Step1Complete {
             c.Update(bson.M{"linksuffix": linkSuf}, bson.M{ "$set": bson.M{"step1complete": true, "step1completedat": time.Now()} })
         }
@@ -171,11 +173,25 @@ func BeginReset(w http.ResponseWriter, r *http.Request) {
     var result Person
     err := c.Find(bson.M{key: value, "step1complete": true, "step2complete": true}).One(&result)
     if err != nil {
-        fmt.Fprintf(w, "%s is not associated with any person in our DB!", value)
+        fmt.Fprintf(w, "%s is not associated with any authenticated person in our DB!", value)
         return
     }
 
-    fmt.Fprintf(w, "%s is associated with %v", value, result)
+    emailTok := getSha256SumRandom(fmt.Sprintf("%s %s %v %v", result.Roll, result.Email, result.Step1CompletedAt, result.Step2CompletedAt))[:15]
+    resetReq := GetResetReq(result.Roll, result.Email, emailTok)
+
+    c = GlobalDBSession.DB(os.Getenv("DB_NAME")).C("resetrequests")
+    err = c.Insert(&resetReq)
+
+    if err != nil {
+        fmt.Fprintf(w, "We were unable to write to our Database. Please try again later! Error: %v", err)
+        return
+    }
+
+    SendVerificationEmail(result.Email, EMAIL_SUBJECT_RESET, "verify-reset/" + emailTok)
+
+    fmt.Fprintf(w, "%s", buildResetPage(redactEmail(result.Email)))
+
 }
 
 func VerifyReset(w http.ResponseWriter, r *http.Request) {

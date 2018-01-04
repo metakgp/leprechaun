@@ -57,14 +57,12 @@ func GetPerson(roll string, email string) Person {
     }
 }
 
-func SendVerificationEmail(email string, token string) {
+func SendVerificationEmail(email string, subject string, suffix string) {
 	from := mail.NewEmail(os.Getenv("FROM_NAME"), os.Getenv("FROM_EMAIL"))
-
-	subject := "Leprechaun Authentication: Step 2, Email Verification"
 
 	to := mail.NewEmail("", email)
 
-	plainTextContent := fmt.Sprintf("Please visit this URL in a web browser: %s/verify2/%s", os.Getenv("BASE_LINK"), token)
+    plainTextContent := fmt.Sprintf("Please visit this URL in a web browser: %s/%s", os.Getenv("BASE_LINK"), suffix)
 
 	message := mail.NewSingleEmail(from, subject, to, plainTextContent, plainTextContent)
 

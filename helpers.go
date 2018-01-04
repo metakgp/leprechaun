@@ -8,6 +8,7 @@ import (
     "fmt"
     "crypto/sha256"
     "math/rand"
+    "strings"
 )
 
 // TODO
@@ -90,6 +91,19 @@ func buildStep2CompletePage(roll string, email string) string {
     return templated_res.String()
 }
 
+func buildResetPage(email string) string {
+    res := struct{
+            Email string
+        }{
+            email,
+        }
+
+    new_temp, _ := template.ParseFiles(PATH_BEGIN_RESET_PAGE)
+    var templated_res bytes.Buffer
+    new_temp.Execute(&templated_res, res)
+    return templated_res.String()
+}
+
 func getSha256Sum(base string) string {
     h := sha256.New()
     h.Write([]byte(base))
@@ -104,4 +118,22 @@ func getSha256SumRandom(base string) string {
     h := sha256.New()
     h.Write([]byte(newBase))
     return fmt.Sprintf("%x", h.Sum(nil))
+}
+
+// ENHANCE: Improve the redaction scheme
+func redactEmail(email string) string {
+    comps := strings.Split(email, "@")
+    username := comps[0]
+    domain := comps[1]
+
+    newUsername := username[:]
+    if (len(username) > 4) {
+        newUsername = strings.Replace(username, username[2:len(username)-2], strings.Repeat("x", len(username)-4), 1)
+    }
+
+    newDomain := domain[:]
+    if (len(domain) > 4) {
+        newDomain = strings.Replace(domain, domain[2:len(domain)-2], strings.Repeat("x", len(domain)-4), 1)
+    }
+    return fmt.Sprintf("%s@%s", newUsername, newDomain)
 }
