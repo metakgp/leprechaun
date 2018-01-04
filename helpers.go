@@ -29,7 +29,7 @@ func buildAuthPage(verifier string, link_suffix string) string {
                     link_suffix,
                     os.Getenv("BASE_LINK"),
                 }
-    new_temp, _ := template.ParseFiles("begin_auth.tmpl.html")
+    new_temp, _ := template.ParseFiles(PATH_BEGIN_AUTH_PAGE)
     var templated_res bytes.Buffer
     new_temp.Execute(&templated_res, res)
     return templated_res.String()
@@ -47,7 +47,7 @@ func buildStep1CompletePage(email string, completedTime time.Time, completed boo
                     completedTime.Format(time.RFC822),
                     completed,
                 }
-    new_temp, _ := template.ParseFiles("step1_complete.tmpl.html")
+    new_temp, _ := template.ParseFiles(PATH_STEP1_COMPLETE_PAGE)
     var templated_res bytes.Buffer
     new_temp.Execute(&templated_res, res)
     return templated_res.String()
@@ -63,7 +63,7 @@ func buildStep2CompletePage(roll string, email string) string {
                     roll,
                     email,
                 }
-    new_temp, _ := template.ParseFiles("step2_complete.tmpl.html")
+    new_temp, _ := template.ParseFiles(PATH_STEP2_COMPLETE_PAGE)
     var templated_res bytes.Buffer
     new_temp.Execute(&templated_res, res)
     return templated_res.String()

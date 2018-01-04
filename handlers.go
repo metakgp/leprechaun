@@ -15,12 +15,15 @@ import (
 
 func Index(w http.ResponseWriter, r *http.Request) {
     w.Header().Set("Content-Type", "text/html; charset=utf-8")
-    b, err := ioutil.ReadFile("index.html")
+    b, err := ioutil.ReadFile(PATH_INDEX_PAGE)
     if err != nil {
-        fmt.Fprintf(w, "Could not read HTML file from disk. Error: %v", err)
+        fmt.Fprintln(w, "Could not read HTML file from disk. Error: ", err)
+        d, _ := os.Getwd()
+        fmt.Fprintf(w, "Currently in %s, searching for %s", d, PATH_INDEX_PAGE)
     } else {
         fmt.Fprintf(w, "%s", b)
     }
+
 }
 
 func BeginAuth(w http.ResponseWriter, r *http.Request) {
