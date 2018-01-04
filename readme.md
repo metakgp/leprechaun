@@ -4,6 +4,8 @@
 
 ## TOC
 - [Public API](#public-api)
+    - [GET Endpoint](#get-endpoint)
+    - [POST Endpoint](#post-endpoint)
 - [Development](#development)
 - [Origin](#origin)
 - [Etymology](#etymology)
