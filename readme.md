@@ -9,6 +9,7 @@
 - [Development](#development)
 - [Origin](#origin)
 - [Etymology](#etymology)
+- [TODO](#todo)
 - [License](#license)
 
 ## Public API
@@ -150,12 +151,16 @@ as a proxy for the user's roll number.
 
 ## Etymology
 
-![img](public/leprechaun.png)
+<img src="public/leprechaun.png" height="600" />
 
 Leprechaun
 
 _n._ a mischievous elf of Irish folklore usually believed to reveal the
 hiding place of treasure if caught
+
+## TODO
+
+Search for the strings `TODO` and `ENHANCE` in the codebase.
 
 ## License
 
