@@ -108,6 +108,13 @@ You need to have MongoDB, Node.js, npm, Golang and gulp installed.
 
 To populate the `.env` file, you need an active Sendgrid account.
 
+To push this to Heroku, run the build script. Note that this is run inside
+Heroku under a GoLang buildpack. But before `go build`, we need to run `gulp`
+and create all the HTML and Template assets. The build script takes care of
+this. (It switches to a different branch, deletes `dist/` from `gitignore`, runs
+`gulp`, adds everything, commits, pushes to Heroku and then, switches back to
+`master`)
+
 ## Origin
 
 [Vikrant Varma](https://github.com/amrav) posted the [Idea
