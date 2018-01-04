@@ -104,6 +104,20 @@ func buildResetPage(email string) string {
     return templated_res.String()
 }
 
+func buildResetCompletePage(roll string, email string) string {
+    res := struct{
+        Roll string
+        Email string
+    }{
+        roll, email,
+    }
+
+    new_temp, _ := template.ParseFiles(PATH_RESET_COMPLETE_PAGE)
+    var templated_res bytes.Buffer
+    new_temp.Execute(&templated_res, res)
+    return templated_res.String()
+}
+
 func getSha256Sum(base string) string {
     h := sha256.New()
     h.Write([]byte(base))

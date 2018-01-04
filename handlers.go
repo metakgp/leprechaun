@@ -93,6 +93,8 @@ func getSecurityQuestions(roll string) []string {
 }
 
 func VerifyStep1(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Content-Type", "text/html; charset=utf-8")
+
     vars := mux.Vars(r)
     linkSuf := vars["token"]
 
@@ -134,6 +136,8 @@ func VerifyStep1(w http.ResponseWriter, r *http.Request) {
 }
 
 func VerifyStep2(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Content-Type", "text/html; charset=utf-8")
+
     vars := mux.Vars(r)
     emailTok := vars["token"]
     c := GlobalDBSession.DB(os.Getenv("DB_NAME")).C("people")
@@ -152,6 +156,7 @@ func VerifyStep2(w http.ResponseWriter, r *http.Request) {
 
 func ResetIndex(w http.ResponseWriter, r *http.Request) {
     w.Header().Set("Content-Type", "text/html; charset=utf-8")
+
     b, err := ioutil.ReadFile(PATH_RESET_INDEX_PAGE)
     if err != nil {
         fmt.Fprintln(w, "Could not read HTML file from disk. Error: ", err)
@@ -163,6 +168,8 @@ func ResetIndex(w http.ResponseWriter, r *http.Request) {
 }
 
 func BeginReset(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Content-Type", "text/html; charset=utf-8")
+
     vars := mux.Vars(r)
     key := vars["key"]
     r.ParseForm()
@@ -191,10 +198,42 @@ func BeginReset(w http.ResponseWriter, r *http.Request) {
     SendVerificationEmail(result.Email, EMAIL_SUBJECT_RESET, "verify-reset/" + emailTok)
 
     fmt.Fprintf(w, "%s", buildResetPage(redactEmail(result.Email)))
-
 }
 
 func VerifyReset(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Content-Type", "text/html; charset=utf-8")
+
     vars := mux.Vars(r)
-    fmt.Fprintf(w, "%s", vars["token"])
+    token := vars["token"]
+
+    resets := GlobalDBSession.DB(os.Getenv("DB_NAME")).C("resetrequests")
+
+    var result ResetRequest
+    err := resets.Find(bson.M{"token": token}).One(&result)
+    if err != nil {
+        fmt.Fprintf(w, "That token doesn't exist in our DB! Check your email once again and ensure you copied the right link")
+        return
+    }
+
+    // Reset is successful!
+    // Delete all resets related to this roll number, email ID.
+    // Delete all people related to this roll number and email ID (both
+    // completely authenticated and otherwise)
+
+    filter := bson.M{"$or": []bson.M{ bson.M{ "email": result.Email }, bson.M{"roll": result.Roll }, }}
+
+    people := GlobalDBSession.DB(os.Getenv("DB_NAME")).C("people")
+
+    peopleInfo, err1 := people.RemoveAll(filter)
+    resetInfo, err2 := resets.RemoveAll(filter)
+
+    if err1 != nil || err2 != nil {
+        fmt.Fprintf(w, "OOPS! There was an error while writing to the DB. People Error: %v; Resets Error: %v", err1, err2)
+        return;
+    }
+
+    log.Printf("DELETE People deleted: %v", peopleInfo)
+    log.Printf("DELETE Reset requests deleted: %v", resetInfo)
+
+    fmt.Fprintf(w, "%s", buildResetCompletePage(result.Roll, result.Email))
 }

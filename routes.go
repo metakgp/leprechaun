@@ -51,7 +51,7 @@ var routes = Routes{
     Route{
         "ResetVerification",
         "GET",
-        "/verify-reset/{verif_token}",
+        "/verify-reset/{token}",
         VerifyReset,
     },
 }

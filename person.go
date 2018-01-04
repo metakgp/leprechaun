@@ -57,6 +57,7 @@ func GetPerson(roll string, email string) Person {
     }
 }
 
+// ENHANCE: Make the link clickable using HTML content with appropriate markup
 func SendVerificationEmail(email string, subject string, suffix string) {
 	from := mail.NewEmail(os.Getenv("FROM_NAME"), os.Getenv("FROM_EMAIL"))
 
