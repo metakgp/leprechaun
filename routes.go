@@ -36,4 +36,22 @@ var routes = Routes{
         "/verify2/{token}",
         VerifyStep2,
     },
+    Route{
+        "ResetPage",
+        "GET",
+        "/reset",
+        ResetIndex,
+    },
+    Route{
+        "BeginReset",
+        "POST",
+        "/reset/{key}",
+        BeginReset,
+    },
+    Route{
+        "ResetVerification",
+        "GET",
+        "/reset/{verif_token}",
+        VerifyReset,
+    },
 }

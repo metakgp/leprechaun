@@ -23,7 +23,6 @@ func Index(w http.ResponseWriter, r *http.Request) {
     } else {
         fmt.Fprintf(w, "%s", b)
     }
-
 }
 
 func BeginAuth(w http.ResponseWriter, r *http.Request) {
@@ -42,13 +41,12 @@ func BeginAuth(w http.ResponseWriter, r *http.Request) {
 
     c := GlobalDBSession.DB(os.Getenv("DB_NAME")).C("people")
 
-    rollExists, _ := c.Find(bson.M{"roll": roll}).Count()
-    emailExists, _ := c.Find(bson.M{"email": email}).Count()
+    rollExists, _ := c.Find(bson.M{"roll": roll, "step1complete": true, "step2complete": true}).Count()
+    emailExists, _ := c.Find(bson.M{"email": email, "step1complete": true, "step2complete": true}).Count()
 
     p := Person{}
     if rollExists > 0 || emailExists > 0 {
         fmt.Fprintf(w, "%s", buildAuthUnsuccessful(rollExists, emailExists))
-        // fmt.Fprintf(w, "%s", buildAuthPage("", ""))
     } else {
         p = GetPerson(roll, email)
 
@@ -148,4 +146,39 @@ func VerifyStep2(w http.ResponseWriter, r *http.Request) {
 
     fmt.Fprint(w, buildStep2CompletePage(result.Roll, result.Email))
     c.Update(bson.M{"emailtoken": emailTok}, bson.M{ "$set": bson.M{"step2complete": true} })
+}
+
+func ResetIndex(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Content-Type", "text/html; charset=utf-8")
+    b, err := ioutil.ReadFile(PATH_RESET_INDEX_PAGE)
+    if err != nil {
+        fmt.Fprintln(w, "Could not read HTML file from disk. Error: ", err)
+        d, _ := os.Getwd()
+        fmt.Fprintf(w, "Currently in %s, searching for %s", d, PATH_INDEX_PAGE)
+    } else {
+        fmt.Fprintf(w, "%s", b)
+    }
+}
+
+func BeginReset(w http.ResponseWriter, r *http.Request) {
+    vars := mux.Vars(r)
+    key := vars["key"]
+    r.ParseForm()
+    value := r.PostForm.Get("key")
+
+    c := GlobalDBSession.DB(os.Getenv("DB_NAME")).C("people")
+
+    var result Person
+    err := c.Find(bson.M{key: value, "step1complete": true, "step2complete": true}).One(&result)
+    if err != nil {
+        fmt.Fprintf(w, "%s is not associated with any person in our DB!", value)
+        return
+    }
+
+    fmt.Fprintf(w, "%s is associated with %v", value, result)
+}
+
+func VerifyReset(w http.ResponseWriter, r *http.Request) {
+    vars := mux.Vars(r)
+    fmt.Fprintf(w, "%s", vars["token"])
 }

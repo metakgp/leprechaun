@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <title>Leprechaun - KGP ERP Authentication Service</title>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    </head>
+    <body style="margin:40px;">
+
+        <div class="container">
+            <header class="header clearfix">
+                <nav>
+                    <ul class="nav nav-pills float-right">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link"
+                                href="https://github.com/metakgp"
+                                target="_blank">Github</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="https://metakgp.github.io" target="_blank">About</a>
+                        </li>
+                    </ul>
+                </nav>
+                <h3>Leprechaun</h3>
+            </header>
+
+            <main role="main">
+
+            <div class="jumbotron">
+                <h2 class="display-3">
+                    Reset Page
+                </h2>
+                <h4>
+                    Reset your roll number or email ID to re-associate it!
+                </h4>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <ol>
+                        <li>
+                            Enter your roll number below
+                        </li>
+                        <li>
+                            You will receive an email on the associated email
+                            adddress
+                        </li>
+                        <li>
+                            Click on the link in this email to remove the
+                            association between your roll number and that email
+                            address
+                        </li>
+                        <li>
+                            After this, you can visit the <a href="/">Home page</a>
+                            to re-associate your roll number with another email
+                            address.
+                        </li>
+                    </ol>
+                    <form method="POST" action="/reset/roll">
+                        <input type="text" name="key" placeholder="Enter the roll number you would like to reset" 
+                        class="form-control" autofocus />
+                        <br>
+                        <input type="submit" value="Reset Roll Number">
+                    </form>
+                </div>
+
+                <div class="col-md-6">
+                    <ol>
+                        <li>
+                            Enter your email address below
+                        </li>
+                        <li>
+                            You will receive an email on this address
+                        </li>
+                        <li>
+                            Click on the link in this email to remove the
+                            association between this email and any roll number
+                        </li>
+                        <li>
+                            After this, you can visit the <a href="/">Home page</a>
+                            to re-associate your email ID with another roll
+                            number
+                        </li>
+                    </ol>
+                    <form method="POST" action="/reset/email">
+                        <input type="text" name="key" placeholder="Enter the email ID you would like to reset"
+                         class="form-control" autofocus />
+                        <br>
+                        <input type="submit" value="Reset Email ID">
+                    </form>
+                </div>
+            </div>
+            </main>
+
+            <footer class="footer">
+                <hr>
+                <p>Leprechaun - Metakgp 2017</p>
+            </footer>
+
+    </body>
+</html>
