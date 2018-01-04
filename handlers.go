@@ -237,3 +237,33 @@ func VerifyReset(w http.ResponseWriter, r *http.Request) {
 
     fmt.Fprintf(w, "%s", buildResetCompletePage(result.Roll, result.Email))
 }
+
+func GetEmail(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Content-Type", "application/json; charset=utf-8")
+
+    if !PublicApiAuthenticate(r.Header.Get("Authorization")) {
+        http.Error(w, ERROR_UNAUTH, 401)
+        return
+    }
+
+    var roll string
+    if r.Method == "POST" {
+        r.ParseForm()
+        roll = r.PostForm.Get("roll")
+    }
+
+    if r.Method == "GET" {
+        vars := mux.Vars(r)
+        roll = vars["roll"]
+    }
+
+    c := GlobalDBSession.DB(os.Getenv("DB_NAME")).C("people")
+    var result Person
+    err := c.Find(bson.M{"roll": roll, "step1complete": true, "step2complete": true}).One(&result)
+    if err != nil {
+        http.Error(w, "Roll number is not associated with any email address", 404)
+        return
+    }
+
+    fmt.Fprintf(w, "{\"email\": \"%s\"}", result.Email)
+}

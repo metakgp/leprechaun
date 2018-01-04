@@ -21,6 +21,11 @@ func validEmail(email string) bool {
     return true
 }
 
+// ENHANCE: Have different tokens for different applications
+func PublicApiAuthenticate(authorization string) bool {
+    return authorization == os.Getenv("AUTH_TOKEN")
+}
+
 type AuthTemplateContext struct {
     Verifier string
     LinkSuffix string

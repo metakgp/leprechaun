@@ -15,3 +15,5 @@ const PATH_RESET_COMPLETE_PAGE = "templates/reset_complete.tmpl.html"
 
 const EMAIL_SUBJECT_STEP2 = "Leprechaun Authentication, Step 2 - Email Verification"
 const EMAIL_SUBJECT_RESET = "Leprechaun Reset - Verification"
+
+const ERROR_UNAUTH = "OOPS! You are not authenticated. If you would like to use Leprechaun, contact the Metakgp Maintainers. More info at https://wiki.metakgp.org/w/Metakgp:Governance#Current_maintainers"

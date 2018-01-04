@@ -54,4 +54,16 @@ var routes = Routes{
         "/verify-reset/{token}",
         VerifyReset,
     },
+    Route{
+        "GetEmail",
+        "POST",
+        "/get",
+        GetEmail,
+    },
+    Route{
+        "GetEmail",
+        "GET",
+        "/get/{roll}",
+        GetEmail,
+    },
 }
