@@ -1,3 +1,4 @@
 leprechaun
 .env
 dist
+vendor/*/
