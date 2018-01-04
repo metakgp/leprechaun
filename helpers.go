@@ -5,6 +5,9 @@ import (
     "html/template"
     "bytes"
     "time"
+    "fmt"
+    "crypto/sha256"
+    "math/rand"
 )
 
 // TODO
@@ -85,4 +88,20 @@ func buildStep2CompletePage(roll string, email string) string {
     var templated_res bytes.Buffer
     new_temp.Execute(&templated_res, res)
     return templated_res.String()
+}
+
+func getSha256Sum(base string) string {
+    h := sha256.New()
+    h.Write([]byte(base))
+    return fmt.Sprintf("%x", h.Sum(nil))
+}
+
+func getSha256SumRandom(base string) string {
+    r := rand.New(rand.NewSource(time.Now().UnixNano()))
+
+    newBase := fmt.Sprintf("%s %v %v", base, time.Now().UnixNano(), r.Uint64())
+
+    h := sha256.New()
+    h.Write([]byte(newBase))
+    return fmt.Sprintf("%x", h.Sum(nil))
 }
