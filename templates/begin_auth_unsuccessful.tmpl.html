@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <title>Leprechaun - KGP ERP Authentication Service</title>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    </head>
+    <body style="margin:40px;">
+
+        <div class="container">
+            <header class="header clearfix">
+                <nav>
+                    <ul class="nav nav-pills float-right">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link"
+                                href="https://github.com/metakgp"
+                                target="_blank">Github</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="https://metakgp.github.io" target="_blank">About</a>
+                        </li>
+                    </ul>
+                </nav>
+                <h3>Leprechaun</h3>
+            </header>
+
+            <main role="main">
+
+            <div class="jumbotron">
+                <h1 class="display-3">
+                    Authentication Flow could not be started!
+                </h1>
+                <h3>
+                    {{if .RollExists }}
+                        This roll number is already associated with a email ID.
+                    {{else}}
+                        This email ID is already associated with a roll number
+                    {{end}}
+                </h3>
+                <h3>
+                    If you would like to re-authenticate yourself, please go to
+                    the <a href="/reset">Reset Page</a> and reset your roll
+                    number or email ID to begin again.
+                </h3>
+            </div>
+
+            </main>
+
+            <footer class="footer">
+                <hr>
+                <p>Leprechaun - Metakgp 2017</p>
+            </footer>
+
+    </body>
+</html>

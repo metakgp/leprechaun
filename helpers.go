@@ -35,6 +35,24 @@ func buildAuthPage(verifier string, link_suffix string) string {
     return templated_res.String()
 }
 
+type AuthUnsuccessfulTemplateContext struct {
+    RollExists bool
+    EmailExists bool
+}
+
+func buildAuthUnsuccessful(rollExists int, emailExists int) string {
+    res := AuthUnsuccessfulTemplateContext{
+                    rollExists > 0,
+                    emailExists > 0,
+                }
+
+    new_temp, _ := template.ParseFiles(PATH_BEGIN_AUTH_UNSUCCESSFUL_PAGE)
+
+    var templated_res bytes.Buffer
+    new_temp.Execute(&templated_res, res)
+    return templated_res.String()
+}
+
 type Step1Complete struct {
     Email string
     CompletedTime string

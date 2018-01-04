@@ -27,6 +27,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 }
 
 func BeginAuth(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Content-Type", "text/html; charset=utf-8")
     r.ParseForm()
 
     for _, f := range fields {
@@ -39,16 +40,24 @@ func BeginAuth(w http.ResponseWriter, r *http.Request) {
     roll := r.PostForm.Get("roll")
     email := r.PostForm.Get("email")
 
-    p := GetPerson(roll, email)
-
     c := GlobalDBSession.DB(os.Getenv("DB_NAME")).C("people")
-    err := c.Insert(&p)
-    if err != nil {
-        log.Fatal(err)
-    }
 
-    w.Header().Set("Content-Type", "text/html; charset=utf-8")
-    fmt.Fprintf(w, "%s", buildAuthPage(p.Verifier, p.LinkSuffix))
+    rollExists, _ := c.Find(bson.M{"roll": roll}).Count()
+    emailExists, _ := c.Find(bson.M{"email": email}).Count()
+
+    p := Person{}
+    if rollExists > 0 || emailExists > 0 {
+        fmt.Fprintf(w, "%s", buildAuthUnsuccessful(rollExists, emailExists))
+        // fmt.Fprintf(w, "%s", buildAuthPage("", ""))
+    } else {
+        p = GetPerson(roll, email)
+
+        err := c.Insert(&p)
+        if err != nil {
+            log.Fatal(err)
+        }
+        fmt.Fprintf(w, "%s", buildAuthPage(p.Verifier, p.LinkSuffix))
+    }
 }
 
 func getSingleSecQues(roll string) string {
