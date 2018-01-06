@@ -135,7 +135,7 @@ The authentication flow goes like this:
 1. User visits Leprechaun and asserts their roll number and email address. The
    user is given a unique verification key and a unique link to visit.
 2. The user is shown a verification key which they must add to one of their
-   secret question text. When they have completed this addition, they can visit
+   secret question text in ERP,by clicking on the forgot password,answer to which can be anything. When they have completed this addition, they can visit
    the link provided to them in step 1.
 3. Leprechaun will make requests to ERP IIT KGP to check whether one of the
    secret questions tied to the user's roll number has the verification key in
