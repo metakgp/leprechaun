@@ -17,8 +17,16 @@
                     Authentication Flow has begun!
                 </h1>
                 <h3>
-                    Add this to the text of one of your security questions:
-                    {{.Verifier}}
+                    Add this to the text of one of your security questions: {{.Verifier}}
+                    <br>
+                    To do that :
+                    <ol>
+                        <li>Open ERP</li>
+                        <li>Click on forgot password</li>
+                        <li>Click on Change Security questions</li>
+                        <li>Enter 3 questions, anyone of which must be {{.Verifier}}. It's answer can be anything.</li>
+                        <li>Click Submit</li>
+                    </ol>                    
                 </h3>
                 <h3>
                     After adding it, visit
