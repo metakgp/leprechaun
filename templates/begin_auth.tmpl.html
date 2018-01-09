@@ -1,9 +1,9 @@
 <!doctype html>
 <html lang="en">
     <head>
-            <!--=include ../include/title_tag.html -->
-            <!--=include ../include/meta_tags.html -->
-            <!--=include ../include/head_include.html -->
+        <!--=include ../include/title_tag.html -->
+        <!--=include ../include/meta_tags.html -->
+        <!--=include ../include/head_include.html -->
     </head>
     <body style="margin:40px;">
 
@@ -20,12 +20,46 @@
                     Add this to the text of one of your security questions:
                     {{.Verifier}}
                 </h3>
+                <h4>
+                    (See the <a href="#guide">Guide</a> if you are unsure what to do)
+                </h4>
+
                 <h3>
                     After adding it, visit
                     <a href="{{.BaseLink}}/verify1/{{.LinkSuffix}}">
                         {{.BaseLink}}/verify1/{{.LinkSuffix}}
                     </a> to continue to step 2 of the authentication process!
                 </h3>
+            </div>
+            <div id ="guide" class="guide">
+
+                <br>
+                Procedure to add {{.Verifier}} to one of your security
+                questions:
+                <ol>
+                    <li>Open <a
+                             href="https://erp.iitkgp.ernet.in/IIT_ERP3/home.htm">ERP
+                        </a>
+                    </li>
+                    <li>
+                        Click on forgot password
+                    </li>
+                    <li>
+                        Click on Change Security questions
+                    </li>
+                    <li>
+                        Enter 3 questions, anyone of which contain {{.Verifier}}. It's answer can be anything.
+                        <br>
+                        <b>Pro-Tip:</b> Enter your old question followed by {{.Verifier}}!
+                        <br>
+                        <b>Eg:</b> Original question: <i>What was the name of your first pet?</i>
+                        <br>
+                        Required question: <i>What was the name of your first pet? {{.Verifier}}</i>
+                    </li>
+
+                    <li>Click Submit</li>
+                </ol> 
+
             </div>
 
             </main>
