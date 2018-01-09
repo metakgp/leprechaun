@@ -17,8 +17,7 @@
                     Authentication Flow has begun!
                 </h1>
                 <h3>
-                    Add this to the text of one of your security questions:
-                    {{.Verifier}}
+                    Append this to the text of one of your security questions: {{.Verifier}}
                 </h3>
                 <h3>
                     After adding it, visit
@@ -26,6 +25,28 @@
                         {{.BaseLink}}/verify1/{{.LinkSuffix}}
                     </a> to continue to step 2 of the authentication process!
                 </h3>
+            </div>
+            <div class="guide">
+
+                <br>
+                    To do that :
+                    <ol>
+                        <li>Open ERP</li>
+                        <li>Click on forgot password</li>
+                        <li>Click on Change Security questions</li>
+                        <li>Enter 3 questions, anyone of which contain {{.Verifier}}. It's answer can be anything.</li>
+                        <li>Any one of the three questions must contain {{.Verifier}}.
+                            <br>
+                                <b>Pro-Tip:</b> Enter your old question followed by {{.Verifier}}!
+                            <br>
+                                Eg: Original question: <i>What was the name of your first pet?</i>
+                            <br>
+                                Required question: <i>What was the name of your first pet? {{.Verifier}}</i>
+                        </li>
+
+                        <li>Click Submit</li>
+                    </ol> 
+                
             </div>
 
             </main>
