@@ -184,7 +184,7 @@ func BeginReset(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    emailTok := getSha256SumRandom(fmt.Sprintf("%s %s %v %v", result.Roll, result.Email, result.Step1CompletedAt, result.Step2CompletedAt))[:15]
+    emailTok := getSha256SumRandom(fmt.Sprintf("%s %s %v %v", result.Roll, result.Email, result.Step1CompletedAt, result.Step2CompletedAt))[:HASH_LEN]
     resetReq := GetResetReq(result.Roll, result.Email, emailTok)
 
     c = GlobalDBSession.DB(os.Getenv("DB_NAME")).C("resetrequests")

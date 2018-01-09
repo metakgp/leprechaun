@@ -47,9 +47,9 @@ func GetPerson(roll string, email string) Person {
     return Person{
         roll,
         email,
-        verifier[:15],
-        email_tok[:15],
-        link_suffix[:15],
+        verifier[:HASH_LEN],
+        email_tok[:HASH_LEN],
+        link_suffix[:HASH_LEN],
         false,
         time.Now(),
         false,

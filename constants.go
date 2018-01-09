@@ -17,3 +17,5 @@ const EMAIL_SUBJECT_STEP2 = "Leprechaun Authentication, Step 2 - Email Verificat
 const EMAIL_SUBJECT_RESET = "Leprechaun Reset - Verification"
 
 const ERROR_UNAUTH = "OOPS! You are not authenticated. If you would like to use Leprechaun, contact the Metakgp Maintainers. More info at https://wiki.metakgp.org/w/Metakgp:Governance#Current_maintainers"
+
+const HASH_LEN = 15
