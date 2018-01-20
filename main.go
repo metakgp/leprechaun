@@ -1,4 +1,4 @@
-package main
+package leprechaun
 
 import (
 	"log"
@@ -9,7 +9,7 @@ import (
 
 var GlobalDBSession = DialDB()
 
-func main() {
+func Main() {
 
     err := godotenv.Load()
     if err != nil {
