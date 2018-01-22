@@ -1,4 +1,4 @@
-package leprechaun
+package main
 
 // import "gopkg.in/mgo.v2/bson"
 import (

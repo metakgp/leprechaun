@@ -1,4 +1,4 @@
-package leprechaun
+package main
 
 type Field struct {
     key string
