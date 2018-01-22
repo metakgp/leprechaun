@@ -1,1 +1,0 @@
-web: go build && ./leprechaun
