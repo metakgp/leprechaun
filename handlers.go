@@ -58,17 +58,13 @@ func BeginAuth(w http.ResponseWriter, r *http.Request) {
     }
 }
 
-func getSingleSecQues(roll string,c chan string) {
-    defer func() {
-        if (recover() != nil) {
-            log.Printf("Exiting gracefully\n")   // in case panic occurs while writing to a closed channel
-        }
-    }()
+func getSingleSecQues(roll string) {
+
     v := url.Values{}
     v.Set("user_id", roll)
     resp, _ := http.PostForm(ERP_SECRET_QUES_URL, v)
     body, _ := ioutil.ReadAll(resp.Body)
-    c <- string(body)
+    return string(body)
     
 }
 
@@ -78,7 +74,7 @@ func getSecurityQuestions(roll string) []string {
     data := make(chan string)
 
     for i := 1 ;i <= 30; i++ {     // Perform upto 30 tries to get the 3 unique secret questions from ERP
-        go getSingleSecQues(roll,data)
+        go func () { data <- getSingleSecQues(roll) } ()
     }
     
     for i := 1; i <= 30; i++ {
@@ -97,7 +93,6 @@ func getSecurityQuestions(roll string) []string {
         }
 
         if len(allSecQues) >= 3 {
-            close(data)
             break;
         }
     }
