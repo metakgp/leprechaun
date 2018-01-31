@@ -1,5 +1,6 @@
 # Leprechaun
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/icyflame/leprechaun)](https://goreportcard.com/report/github.com/icyflame/leprechaun)
 > Connect an email ID to your IIT KGP roll number!
 
 ## TOC
