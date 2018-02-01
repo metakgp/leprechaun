@@ -28,7 +28,7 @@ gulp.task("html", function() {
 
 		gulp.src("html/*.html")
 		.pipe(include())
-		.pipe(replace("{{git_head}}", head_str))
+		.pipe(replace("[git_head]", head_str))
 		.on('error', console.log)
 		.pipe(gulp.dest("dist/html"));
 
