@@ -152,7 +152,7 @@ func VerifyStep2(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Fprint(w, buildStep2CompletePage(result.Roll, result.Email))
-	c.Update(bson.M{"emailtoken": emailTok}, bson.M{"$set": bson.M{"step2complete": true}})
+	c.Update(bson.M{"emailtoken": emailTok}, bson.M{"$set": bson.M{"step2complete": true, "step2completedat": time.Now()}})
 }
 
 func ResetIndex(w http.ResponseWriter, r *http.Request) {
