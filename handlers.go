@@ -1,9 +1,9 @@
 package main
 
 import (
-	"fmt"
-	"io/ioutil"
-	"net/http"
+    "fmt"
+    "io/ioutil"
+    "net/http"
     "os"
     "log"
     "net/url"
@@ -59,6 +59,7 @@ func BeginAuth(w http.ResponseWriter, r *http.Request) {
 }
 
 func getSingleSecQues(roll string) string {
+
     v := url.Values{}
     v.Set("user_id", roll)
     resp, _ := http.PostForm(ERP_SECRET_QUES_URL, v)
@@ -66,29 +67,27 @@ func getSingleSecQues(roll string) string {
     return string(body)
 }
 
-func getSecurityQuestions(roll string) []string {
-    allSecQues := []string{}
+func getSecurityQuestions(roll string) map[string]bool {
+    allSecQues := := make(map[string]bool)
+    data := make(chan string)
 
-    // Perform upto 30 tries to get the 3 unique secret questions from ERP
-    for i := 1; i < 30; i++ {
-        secQues := getSingleSecQues(roll)
-        log.Printf("Run %d, Got %s", i, secQues)
-        alreadyFound := false
-        for _, q := range allSecQues {
-            if q == secQues {
-                alreadyFound = true
-                break;
-            }
-        }
+    for i := 1; i <= 30; i++ { // Perform upto 30 tries to get the 3 unique secret questions from ERP
+        go func() { data <- getSingleSecQues(roll) }()
+    }
 
-        if !alreadyFound {
-            allSecQues = append(allSecQues[:], secQues)
+    for i := 1; i <= 30; i++ {
+        secQues := <-data
+        log.Printf("Run %d, Got %s\n", i, secQues)
+
+        if !allSecQues[secQues] {
+            allSecQues[secQues] = true
         }
 
         if len(allSecQues) >= 3 {
             break;
         }
     }
+
     return allSecQues;
 }
 
@@ -114,7 +113,7 @@ func VerifyStep1(w http.ResponseWriter, r *http.Request) {
 
         secQues := getSecurityQuestions(result.Roll)
 
-        for _, ques := range secQues {
+        for ques, _ := range secQues {
             if strings.Contains(ques, result.Verifier) {
                 verified = true
                 break
