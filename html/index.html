@@ -44,15 +44,20 @@
                     have now been tied!
                 </li>
             </ol>
-            <form method="POST" action="/auth">
-                <input type="text" name="roll" placeholder="Enter your roll number"
-                                               autofocus />
-                <br>
-                <input type="text" name="email" placeholder="Enter your email address"
-                                                />
-                <br>
-                <input type="submit" value="Begin authentication process now!">
-            </form>
+			<div class="col-md-4">
+				<form method="POST" action="/auth">
+					<input type="text" name="roll" placeholder="Enter your roll number"
+												   class="form-control" required
+												   autofocus />
+					<br>
+					<input type="text" name="email" placeholder="Enter your email address"
+													class="form-control"
+													required />
+					<br>
+					<input type="submit" value="Begin authentication process now!"
+											class="btn btn-primary" />
+				</form>
+			</div>
 
             </main>
 
