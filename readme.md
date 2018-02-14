@@ -5,8 +5,6 @@
 
 ## TOC
 - [Public API](#public-api)
-    - [GET Endpoint](#get-endpoint)
-    - [POST Endpoint](#post-endpoint)
 - [Development](#development)
 - [Origin](#origin)
 - [Etymology](#etymology)
@@ -20,73 +18,70 @@ If you would like to use the API, contact one of the
 [maintainers](https://wiki.metakgp.org/w/Metakgp:Governance#Current_maintainers)
 on [Metakgp Slack](https://metakgp.slack.com).
 
-### GET endpoint
+**Authentication:** In your request, add an `Authorization` header. The
+value of the header should be `Bearer <TOKEN>`. You can get this token from one
+of the maintainers.
 
-**Endpoint:** GET /get/{rollNumber}
+**Endpoint:** `GET /get/{input_type}/{input}`
+
+Valid values of `input_type`:
+
+	0. `roll`
+	0. `email`
+
+Examples:
+
+	0. `GET /get/roll/12CS40067`
+	0. `GET /get/email/bob@example.com`
 
 **Response:** 
 
-`application/json` with the key `email` if this Roll number is authenticated
+- 401 if request is unauthorized
+- 404 if no record with the given input_type and input could be find
+- 200 if a record was found. The response will contain a JSON object with the following keys set:
 
-401 if you don't send the correct bearer token
-
-404 if the roll number is not authenticated
+	0. `roll`
+	0. `email`
 
 **Curl Verbose:**
 
 ```sh
-$ curl -vvv -H "Authorization: Bearer abcdefghijklmnopqrstuvwxyz" http://localhost:8080/get/12AB3456789
-*   Trying 127.0.0.1...
-* Connected to localhost (127.0.0.1) port 8080 (#0)
-> GET /get/12AB34567 HTTP/1.1
-> Host: localhost:8080
+$ curl -vvv -H "Authorization: Bearer abcd" https://leprechaun.metakgp.org/get/roll/12CS40067
+*   Trying 172.16.2.30...
+* Connected to 172.16.2.30 (172.16.2.30) port 8080 (#0)
+* Establish HTTP proxy tunnel to leprechaun.metakgp.org:443
+> CONNECT leprechaun.metakgp.org:443 HTTP/1.1
+> Host: leprechaun.metakgp.org:443
+> User-Agent: curl/7.47.0
+> Proxy-Connection: Keep-Alive
+>
+< HTTP/1.1 200 Connection Established
+< Proxy-Agent: IWSS
+< Date: Wed, 14 Feb 2018 09:51:48 GMT
+<
+* Proxy replied OK to CONNECT request
+* found 148 certificates in /etc/ssl/certs/ca-certificates.crt
+* found 597 certificates in /etc/ssl/certs
+* ALPN, offering http/1.1
+* SSL connection using TLS1.2 / ECDHE_ECDSA_AES_128_GCM_SHA256
+* ...
+* ALPN, server accepted to use http/1.1
+> GET /get/roll/12CS40067 HTTP/1.1
+> Host: leprechaun.metakgp.org
 > User-Agent: curl/7.47.0
 > Accept: */*
-> Authorization: Bearer abcdefghijklmnopqrstuvwxyz
-> 
+> Authorization: Bearer abcd
+>
 < HTTP/1.1 200 OK
+< Date: Wed, 14 Feb 2018 09:51:43 GMT
 < Content-Type: application/json; charset=utf-8
-< Date: Thu, 04 Jan 2018 10:08:58 GMT
-< Content-Length: 41
-< 
-* Connection #0 to host localhost left intact
-{"email": "foobar@example.com"}
-```
-
-### POST endpoint
-
-**Endpoint:** POST /get with the header `Content-Type: application/x-www-form-urlencoded`
-
-**Response:** 
-
-`application/json` with the key `email` if this Roll number is authenticated
-
-401 if you don't send the correct bearer token
-
-404 if the roll number is not authenticated
-
-**Curl Verbose:**
-
-```sh
-$ curl -d 'roll=12AB3456789' -vvv -H "Authorization: Bearer abcdefghijklmnopqrstuvwxyz" http://localhost:8080/get
-*   Trying 127.0.0.1...
-* Connected to localhost (127.0.0.1) port 8080 (#0)
-> POST /get HTTP/1.1
-> Host: localhost:8080
-> User-Agent: curl/7.47.0
-> Accept: */*
-> Authorization: Bearer abcdefghijklmnopqrstuvwxyz
-> Content-Length: 14
-> Content-Type: application/x-www-form-urlencoded
-> 
-* upload completely sent off: 14 out of 14 bytes
-< HTTP/1.1 200 OK
-< Content-Type: application/json; charset=utf-8
-< Date: Thu, 04 Jan 2018 10:11:26 GMT
-< Content-Length: 41
-< 
-* Connection #0 to host localhost left intact
-{"email": "foobar@example.com"}
+< Content-Length: 59
+< Connection: keep-alive
+< Via: 1.1 vegur
+< Server: cloudflare
+<
+* Connection #0 to host 172.16.2.30 left intact
+{"email":"bob@example.com","roll":"12CS40067"}
 ```
 
 ## Development
@@ -138,14 +133,14 @@ The authentication flow goes like this:
    link to visit.
 2. The user is shown a verification key which they must add to one of their
    secret question text in ERP.
-   
+
    **Eg:**  
    Old Question: _What was the name of your first pet?_  
    New Question: _What was the name of your first pet? (VERIFIER_TOKEN)_ 
-   
+
    The question can be changed in the ERP using the Forgot password section on the
    IIT KGP ERP.
-   
+
    Once they have changed the text of the question, they can visit the link
    provided in step 1.
 3. Leprechaun will make requests to ERP IIT KGP to check whether one of the
