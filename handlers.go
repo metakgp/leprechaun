@@ -5,6 +5,7 @@ import (
 	"github.com/gorilla/mux"
 	"gopkg.in/mgo.v2/bson"
 	"io/ioutil"
+	"encoding/json"
 	"log"
 	"net/http"
 	"net/url"
@@ -126,8 +127,8 @@ func VerifyStep1(w http.ResponseWriter, r *http.Request) {
 	if verified || result.Step1Complete {
 		fmt.Fprint(w, buildStep1CompletePage(result.Email, result.Step1CompletedAt, result.Step1Complete))
 		SendVerificationEmail(result.Email,
-			EMAIL_SUBJECT_STEP2,
-			"verify2/"+result.EmailToken)
+		EMAIL_SUBJECT_STEP2,
+		"verify2/"+result.EmailToken)
 		if !result.Step1Complete {
 			c.Update(bson.M{"linksuffix": linkSuf}, bson.M{"$set": bson.M{"step1complete": true, "step1completedat": time.Now()}})
 		}
@@ -239,32 +240,36 @@ func VerifyReset(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "%s", buildResetCompletePage(result.Roll, result.Email))
 }
 
-func GetEmail(w http.ResponseWriter, r *http.Request) {
+func GetDetails (w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
-	if !PublicApiAuthenticate(r.Header.Get("Authorization")) {
+	err := authenticateRequest(r)
+
+	if err != nil {
 		http.Error(w, ERROR_UNAUTH, 401)
-		return
 	}
 
-	var roll string
-	if r.Method == "POST" {
-		r.ParseForm()
-		roll = r.PostForm.Get("roll")
-	}
-
-	if r.Method == "GET" {
-		vars := mux.Vars(r)
-		roll = vars["roll"]
-	}
+	vars := mux.Vars(r)
+	input_type := vars["input"]
+	val := vars["input_val"]
 
 	c := GlobalDBSession.DB(os.Getenv("DB_NAME")).C("people")
 	var result Person
-	err := c.Find(bson.M{"roll": roll, "step1complete": true, "step2complete": true}).One(&result)
+	query := bson.M{"step1complete": true, "step2complete": true}
+	query[input_type] = val
+
+	err = c.Find(query).One(&result)
 	if err != nil {
 		http.Error(w, "Roll number is not associated with any email address", 404)
 		return
 	}
 
-	fmt.Fprintf(w, "{\"email\": \"%s\"}", result.Email)
+	to_return := map[string]string{}
+
+	to_return["email"] = result.Email
+	to_return["roll"] = result.Roll
+
+	proper_json, _ := json.Marshal(to_return)
+
+	fmt.Fprint(w, string(proper_json))
 }

@@ -55,15 +55,9 @@ var routes = Routes{
 		VerifyReset,
 	},
 	Route{
-		"GetEmail",
-		"POST",
-		"/get",
-		GetEmail,
-	},
-	Route{
-		"GetEmail",
+		"GetDetails",
 		"GET",
-		"/get/{roll}",
-		GetEmail,
+		"/get/{input}/{input_val}",
+		GetDetails,
 	},
 }
