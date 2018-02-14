@@ -6,11 +6,11 @@ type Field struct {
 }
 
 var fields = []Field{
-	Field{
+	{
 		"roll",
 		validRoll,
 	},
-	Field{
+	{
 		"email",
 		validEmail,
 	},

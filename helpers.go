@@ -3,14 +3,14 @@ package main
 import (
 	"bytes"
 	"crypto/sha256"
+	"errors"
 	"fmt"
 	"html/template"
 	"math/rand"
+	"net/http"
 	"os"
 	"strings"
 	"time"
-	"net/http"
-	"errors"
 )
 
 // A function that will validate the given roll number string
@@ -42,7 +42,7 @@ func authenticateRequest(req *http.Request) error {
 // Leprechaun
 func allowedInputType(t string) bool {
 	allowed_types := map[string]bool{
-		"roll": true,
+		"roll":  true,
 		"email": true,
 	}
 	return allowed_types[t]

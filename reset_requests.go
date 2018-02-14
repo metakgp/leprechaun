@@ -1,7 +1,5 @@
 package main
 
-import ()
-
 type ResetRequest struct {
 	Roll  string
 	Email string

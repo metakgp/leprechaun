@@ -1,11 +1,11 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
 	"gopkg.in/mgo.v2/bson"
 	"io/ioutil"
-	"encoding/json"
 	"log"
 	"net/http"
 	"net/url"
@@ -87,7 +87,7 @@ func getSecurityQuestions(roll string) []string {
 	}
 
 	retVal := []string{}
-	for key, _ := range allSecQues {
+	for key := range allSecQues {
 		retVal = append(retVal, key)
 	}
 
@@ -127,8 +127,8 @@ func VerifyStep1(w http.ResponseWriter, r *http.Request) {
 	if verified || result.Step1Complete {
 		fmt.Fprint(w, buildStep1CompletePage(result.Email, result.Step1CompletedAt, result.Step1Complete))
 		SendVerificationEmail(result.Email,
-		EMAIL_SUBJECT_STEP2,
-		"verify2/"+result.EmailToken)
+			EMAIL_SUBJECT_STEP2,
+			"verify2/"+result.EmailToken)
 		if !result.Step1Complete {
 			c.Update(bson.M{"linksuffix": linkSuf}, bson.M{"$set": bson.M{"step1complete": true, "step1completedat": time.Now()}})
 		}
@@ -222,7 +222,7 @@ func VerifyReset(w http.ResponseWriter, r *http.Request) {
 	// Delete all people related to this roll number and email ID (both
 	// completely authenticated and otherwise)
 
-	filter := bson.M{"$or": []bson.M{bson.M{"email": result.Email}, bson.M{"roll": result.Roll}}}
+	filter := bson.M{"$or": []bson.M{{"email": result.Email}, {"roll": result.Roll}}}
 
 	people := GlobalDBSession.DB(os.Getenv("DB_NAME")).C("people")
 
@@ -240,7 +240,7 @@ func VerifyReset(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "%s", buildResetCompletePage(result.Roll, result.Email))
 }
 
-func GetDetails (w http.ResponseWriter, r *http.Request) {
+func GetDetails(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
 	err := authenticateRequest(r)
