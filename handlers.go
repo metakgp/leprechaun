@@ -247,6 +247,7 @@ func GetDetails (w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		http.Error(w, ERROR_UNAUTH, 401)
+		return
 	}
 
 	vars := mux.Vars(r)
