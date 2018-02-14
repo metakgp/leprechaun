@@ -254,6 +254,11 @@ func GetDetails (w http.ResponseWriter, r *http.Request) {
 	input_type := vars["input"]
 	val := vars["input_val"]
 
+	if !allowedInputType(input_type) {
+		http.Error(w, ERROR_UNKNOWN_TYPE, 401)
+		return
+	}
+
 	c := GlobalDBSession.DB(os.Getenv("DB_NAME")).C("people")
 	var result Person
 	query := bson.M{"step1complete": true, "step2complete": true}

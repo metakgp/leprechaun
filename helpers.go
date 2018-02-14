@@ -38,6 +38,16 @@ func authenticateRequest(req *http.Request) error {
 	}
 }
 
+// Function that returns true for allowed input types in the GET API exposed by
+// Leprechaun
+func allowedInputType(t string) bool {
+	allowed_types := map[string]bool{
+		"roll": true,
+		"email": true,
+	}
+	return allowed_types[t]
+}
+
 // AuthTemplateContext is the context structure that must be sent to generate
 // the markup for the HTML page shown to the user when step1 is initiated
 type AuthTemplateContext struct {
