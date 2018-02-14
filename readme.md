@@ -26,13 +26,13 @@ of the maintainers.
 
 Valid values of `input_type`:
 
-	0. `roll`
-	0. `email`
+1. `roll`
+1. `email`
 
 Examples:
 
-	0. `GET /get/roll/12CS40067`
-	0. `GET /get/email/bob@example.com`
+1. `GET /get/roll/12CS40067`
+1. `GET /get/email/bob@example.com`
 
 **Response:** 
 
@@ -40,8 +40,8 @@ Examples:
 - 404 if no record with the given input_type and input could be find
 - 200 if a record was found. The response will contain a JSON object with the following keys set:
 
-	0. `roll`
-	0. `email`
+	1. `roll`
+	1. `email`
 
 **Curl Verbose:**
 
