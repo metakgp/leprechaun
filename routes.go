@@ -55,15 +55,9 @@ var routes = Routes{
 		VerifyReset,
 	},
 	Route{
-		"GetEmail",
+		"GetDetails",
 		"GET",
-		"/get/roll/{val}",
-		GetHandlerFunc("roll", "email"),
-	},
-	Route{
-		"GetRoll",
-		"GET",
-		"/get/email/{val}",
-		GetHandlerFunc("email", "roll"),
+		"/get/{input}/{input_val}",
+		GetDetails,
 	},
 }

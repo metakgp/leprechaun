@@ -9,6 +9,8 @@ import (
 	"os"
 	"strings"
 	"time"
+	"net/http"
+	"errors"
 )
 
 // A function that will validate the given roll number string
@@ -28,8 +30,12 @@ func validEmail(email string) bool {
 // This function validates the user using the Authorization header that they
 // have sent alongwith their request to the API
 // ENHANCE: Have different tokens for different applications
-func PublicApiAuthenticate(authorization string) bool {
-	return authorization == os.Getenv("AUTH_TOKEN")
+func authenticateRequest(req *http.Request) error {
+	if req.Header.Get("Authorization") == os.Getenv("AUTH_TOKEN") {
+		return nil
+	} else {
+		return errors.New("Unauthorized")
+	}
 }
 
 // AuthTemplateContext is the context structure that must be sent to generate

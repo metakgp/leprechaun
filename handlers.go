@@ -127,8 +127,8 @@ func VerifyStep1(w http.ResponseWriter, r *http.Request) {
 	if verified || result.Step1Complete {
 		fmt.Fprint(w, buildStep1CompletePage(result.Email, result.Step1CompletedAt, result.Step1Complete))
 		SendVerificationEmail(result.Email,
-			EMAIL_SUBJECT_STEP2,
-			"verify2/"+result.EmailToken)
+		EMAIL_SUBJECT_STEP2,
+		"verify2/"+result.EmailToken)
 		if !result.Step1Complete {
 			c.Update(bson.M{"linksuffix": linkSuf}, bson.M{"$set": bson.M{"step1complete": true, "step1completedat": time.Now()}})
 		}
@@ -240,49 +240,36 @@ func VerifyReset(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "%s", buildResetCompletePage(result.Roll, result.Email))
 }
 
-func GetHandlerFunc(input, output string) func (w http.ResponseWriter, r *http.Request) {
+func GetDetails (w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
-	return func (w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	err := authenticateRequest(r)
 
-		if !PublicApiAuthenticate(r.Header.Get("Authorization")) {
-			http.Error(w, ERROR_UNAUTH, 401)
-			return
-		}
-
-		var val string
-
-		if r.Method == "GET" {
-			vars := mux.Vars(r)
-			val = vars["val"]
-		}
-
-		c := GlobalDBSession.DB(os.Getenv("DB_NAME")).C("people")
-		var result Person
-		query := bson.M{"step1complete": true, "step2complete": true}
-		query[input] = val
-
-		err := c.Find(query).One(&result)
-		if err != nil {
-			http.Error(w, "Roll number is not associated with any email address", 404)
-			return
-		}
-
-		var output_val string
-		switch (output) {
-		case "roll":
-			output_val = result.Roll
-			break
-		case "email":
-			output_val = result.Email
-			break
-		}
-
-		to_return := map[string]string{}
-		to_return[output] = output_val
-
-		proper_json, _ := json.Marshal(to_return)
-
-		fmt.Fprint(w, string(proper_json))
+	if err != nil {
+		http.Error(w, ERROR_UNAUTH, 401)
 	}
+
+	vars := mux.Vars(r)
+	input_type := vars["input"]
+	val := vars["input_val"]
+
+	c := GlobalDBSession.DB(os.Getenv("DB_NAME")).C("people")
+	var result Person
+	query := bson.M{"step1complete": true, "step2complete": true}
+	query[input_type] = val
+
+	err = c.Find(query).One(&result)
+	if err != nil {
+		http.Error(w, "Roll number is not associated with any email address", 404)
+		return
+	}
+
+	to_return := map[string]string{}
+
+	to_return["email"] = result.Email
+	to_return["roll"] = result.Roll
+
+	proper_json, _ := json.Marshal(to_return)
+
+	fmt.Fprint(w, string(proper_json))
 }
