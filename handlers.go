@@ -266,7 +266,7 @@ func GetDetails (w http.ResponseWriter, r *http.Request) {
 
 	err = c.Find(query).One(&result)
 	if err != nil {
-		http.Error(w, "Roll number is not associated with any email address", 404)
+		http.Error(w, ERROR_NOT_FOUND, 404)
 		return
 	}
 
