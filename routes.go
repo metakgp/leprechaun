@@ -56,14 +56,14 @@ var routes = Routes{
 	},
 	Route{
 		"GetEmail",
-		"POST",
-		"/get",
-		GetEmail,
+		"GET",
+		"/get/roll/{val}",
+		GetHandlerFunc("roll", "email"),
 	},
 	Route{
-		"GetEmail",
+		"GetRoll",
 		"GET",
-		"/get/{roll}",
-		GetEmail,
+		"/get/email/{val}",
+		GetHandlerFunc("email", "roll"),
 	},
 }

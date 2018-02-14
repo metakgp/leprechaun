@@ -5,6 +5,7 @@ import (
 	"github.com/gorilla/mux"
 	"gopkg.in/mgo.v2/bson"
 	"io/ioutil"
+	"encoding/json"
 	"log"
 	"net/http"
 	"net/url"
@@ -239,32 +240,49 @@ func VerifyReset(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "%s", buildResetCompletePage(result.Roll, result.Email))
 }
 
-func GetEmail(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+func GetHandlerFunc(input, output string) func (w http.ResponseWriter, r *http.Request) {
 
-	if !PublicApiAuthenticate(r.Header.Get("Authorization")) {
-		http.Error(w, ERROR_UNAUTH, 401)
-		return
+	return func (w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+
+		if !PublicApiAuthenticate(r.Header.Get("Authorization")) {
+			http.Error(w, ERROR_UNAUTH, 401)
+			return
+		}
+
+		var val string
+
+		if r.Method == "GET" {
+			vars := mux.Vars(r)
+			val = vars["val"]
+		}
+
+		c := GlobalDBSession.DB(os.Getenv("DB_NAME")).C("people")
+		var result Person
+		query := bson.M{"step1complete": true, "step2complete": true}
+		query[input] = val
+
+		err := c.Find(query).One(&result)
+		if err != nil {
+			http.Error(w, "Roll number is not associated with any email address", 404)
+			return
+		}
+
+		var output_val string
+		switch (output) {
+		case "roll":
+			output_val = result.Roll
+			break
+		case "email":
+			output_val = result.Email
+			break
+		}
+
+		to_return := map[string]string{}
+		to_return[output] = output_val
+
+		proper_json, _ := json.Marshal(to_return)
+
+		fmt.Fprint(w, string(proper_json))
 	}
-
-	var roll string
-	if r.Method == "POST" {
-		r.ParseForm()
-		roll = r.PostForm.Get("roll")
-	}
-
-	if r.Method == "GET" {
-		vars := mux.Vars(r)
-		roll = vars["roll"]
-	}
-
-	c := GlobalDBSession.DB(os.Getenv("DB_NAME")).C("people")
-	var result Person
-	err := c.Find(bson.M{"roll": roll, "step1complete": true, "step2complete": true}).One(&result)
-	if err != nil {
-		http.Error(w, "Roll number is not associated with any email address", 404)
-		return
-	}
-
-	fmt.Fprintf(w, "{\"email\": \"%s\"}", result.Email)
 }
