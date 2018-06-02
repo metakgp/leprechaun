@@ -274,7 +274,7 @@ func GetDetails(w http.ResponseWriter, r *http.Request) {
 
 	to_return["email"] = result.Email
 	to_return["roll"] = result.Roll
-	to_return["authenticated"] = result.Step2CompletedAt
+	to_return["authenticated"] = result.Step2CompletedAt.Format(time.RFC3339)
 
 	proper_json, _ := json.Marshal(to_return)
 
