@@ -40,8 +40,9 @@ Examples:
 - 404 if no record with the given input_type and input could be find
 - 200 if a record was found. The response will contain a JSON object with the following keys set:
 
-	1. `roll`
-	1. `email`
+	1. `roll` - Roll number of the user
+	1. `email` - Email of the user
+	1. `authenticated` - Timestamp that the authentication was completed in [RFC3339][1] format
 
 **Curl Verbose:**
 
@@ -81,7 +82,7 @@ $ curl -vvv -H "Authorization: Bearer abcd" https://leprechaun.metakgp.org/get/r
 < Server: cloudflare
 <
 * Connection #0 to host 172.16.2.30 left intact
-{"email":"bob@example.com","roll":"12CS40067"}
+{"authenticated":"2018-01-04T13:12:50Z","email":"bob@example.com","roll":"12CS40067"}
 ```
 
 ## Development
@@ -180,3 +181,5 @@ Search for the strings `TODO` and `ENHANCE` in the codebase.
 Code licensed under MIT.
 
 Metakgp 2018
+
+[1]: https://tools.ietf.org/html/rfc3339
