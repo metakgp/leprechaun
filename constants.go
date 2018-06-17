@@ -1,7 +1,7 @@
 package main
 
-const ERP_SECRET_QUES_URL = "https://erp.iitkgp.ernet.in/SSOAdministration/getSecurityQues.htm"
-const ERP_HOMEPAGE_URL = "https://erp.iitkgp.ernet.in/IIT_ERP3/welcome.jsp"
+const ERP_SECRET_QUES_URL = "https://erp.iitkgp.ac.in/SSOAdministration/getSecurityQues.htm"
+const ERP_HOMEPAGE_URL = "https://erp.iitkgp.ac.in/IIT_ERP3/welcome.jsp"
 
 const PATH_INDEX_PAGE = "dist/html/index.html"
 const PATH_RESET_INDEX_PAGE = "dist/html/reset_index.html"
