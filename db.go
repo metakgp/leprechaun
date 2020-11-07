@@ -11,7 +11,7 @@ import (
 func DialDB() *mgo.Session {
 	mongoURI := os.Getenv("MONGODB_URI")
 	if mongoURI == "" {
-		mongoURI := os.Getenv("ATLAS_MONGODB_URI")
+		mongoURI = os.Getenv("ATLAS_MONGODB_URI")
 	}
 	session, err := mgo.Dial(mongoURI)
 	if err != nil {
