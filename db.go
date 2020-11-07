@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"gopkg.in/mgo.v2"
+	"github.com/globalsign/mgo"
 )
 
 // DialDB() returns a mgo Session connected to the Database pointed to by the

@@ -1,15 +1,15 @@
 package main
 
-// import "gopkg.in/mgo.v2/bson"
 import (
 	"crypto/sha256"
 	"fmt"
-	sg "github.com/sendgrid/sendgrid-go"
-	"github.com/sendgrid/sendgrid-go/helpers/mail"
 	"log"
 	"math/rand"
 	"os"
 	"time"
+
+	sg "github.com/sendgrid/sendgrid-go"
+	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
 
 type Person struct {
